@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HabiTracker - Rastrea visualmente tu progreso en dieta y ejercicio">
     <meta name="author" content="Natvia Digital">
     <title>HabiTracker - Seguimiento de Hábitos</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
         <header class="app-header">
             <div class="logo-container">
-                <img src="https://qzbmdqnwgoihzjxanpbq.supabase.co/storage/v1/object/public/ImagenesApp/NatviaSlim%20(1).png" 
-                     alt="HabiTracker Logo" 
-                     class="app-logo">
+                <img src="https://qzbmdqnwgoihzjxanpbq.supabase.co/storage/v1/object/public/ImagenesApp/NatviaSlim%20(1).png"
+                    alt="HabiTracker Logo" class="app-logo">
             </div>
             <h1 class="app-title">HabiTracker</h1>
             <p class="app-subtitle">Rastrea tu progreso en dieta y ejercicio</p>
@@ -36,7 +38,7 @@
             <div class="tracker-card">
                 <h2 class="section-title">Registro de Hoy</h2>
                 <p class="current-date" id="currentDate"></p>
-                
+
                 <div class="checkbox-group">
                     <label class="checkbox-label">
                         <input type="checkbox" id="dietCheckbox" class="custom-checkbox">
@@ -45,7 +47,7 @@
                             Cumplí mi objetivo de dieta
                         </span>
                     </label>
-                    
+
                     <label class="checkbox-label">
                         <input type="checkbox" id="exerciseCheckbox" class="custom-checkbox">
                         <span class="checkbox-text">
@@ -54,7 +56,7 @@
                         </span>
                     </label>
                 </div>
-                
+
                 <button id="saveBtn" class="save-btn">
                     <span class="btn-icon">✓</span>
                     Guardar Progreso
@@ -124,6 +126,7 @@
     <div id="toast" class="toast"></div>
 
     <!-- App Script -->
-    <script src="app.js"></script>
+    <script type="module" src="/app.js"></script>
 </body>
+
 </html>

@@ -1,15 +1,15 @@
 {
   "name": "habitracker",
+  "summary": "Aplicación de seguimiento de hábitos",
+  "private": true,
   "version": "1.0.0",
-  "description": "Aplicación de seguimiento de hábitos",
-  "main": "index.html",
+  "type": "module",
   "scripts": {
-    "start": "npx serve -s . -l 3000"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "dependencies": {
-    "serve": "^14.2.1"
-  },
-  "engines": {
-    "node": ">=14.x"
+  "devDependencies": {
+    "vite": "^5.0.0"
   }
 }
