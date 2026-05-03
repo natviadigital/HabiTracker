@@ -1,11 +1,14 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  // Ensure the build output goes to 'dist'
   build: {
     outDir: 'dist',
     emptyOutDir: true,
   },
-  // Base path - use '/' for root domain deployment
   base: '/',
+  preview: {
+    host: '0.0.0.0',
+    port: 3000,
+    allowedHosts: ['habitracker.natviadigital.com'],
+  },
 });
