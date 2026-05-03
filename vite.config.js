@@ -2,13 +2,10 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   build: {
-    outDir: 'dist',
+    // Output directly to Hostinger's web root (public_html)
+    // The app code lives in /nodejs/, so ../public_html is the web root
+    outDir: '../public_html',
     emptyOutDir: true,
   },
   base: '/',
-  preview: {
-    host: '0.0.0.0',
-    port: 3000,
-    allowedHosts: ['habitracker.natviadigital.com'],
-  },
 });
