@@ -66,9 +66,14 @@ body {
 
 /* Container */
 .container {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
   padding: var(--spacing-lg);
+}
+
+/* Utility */
+.hidden {
+  display: none !important;
 }
 
 /* ========================================
@@ -76,7 +81,7 @@ body {
    ======================================== */
 .app-header {
   text-align: center;
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
   animation: fadeInDown 0.6s ease;
 }
 
@@ -115,13 +120,86 @@ body {
 }
 
 /* ========================================
-   Daily Tracker Section
+   Tab Navigation
    ======================================== */
-.daily-tracker {
-  margin-bottom: var(--spacing-xl);
-  animation: fadeInUp 0.6s ease 0.2s both;
+.tabs-nav {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 0.5rem;
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-lg);
+  animation: fadeInDown 0.5s ease 0.1s both;
 }
 
+.tab-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem 0.5rem;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.tab-btn:hover {
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.tab-icon {
+  font-size: 1.5rem;
+}
+
+.tab-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ========================================
+   View Sections
+   ======================================== */
+.view {
+  animation: fadeInUp 0.4s ease both;
+}
+
+.view-header {
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+}
+
+.view-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.view-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* ========================================
+   Daily Tracker / Register Section
+   ======================================== */
 .tracker-card {
   background: var(--bg-card);
   backdrop-filter: blur(10px);
@@ -129,18 +207,12 @@ body {
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-xl);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
-}
-
-.tracker-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 25px 35px rgba(0, 0, 0, 0.4);
 }
 
 .section-title {
   font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
   color: var(--text-primary);
 }
 
@@ -148,6 +220,46 @@ body {
   font-size: 0.875rem;
   color: var(--text-secondary);
   margin-bottom: var(--spacing-md);
+}
+
+/* Date Picker */
+.date-picker-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.date-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.date-input {
+  background: rgba(148, 163, 184, 0.08);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+  flex: 1;
+  min-width: 150px;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
 }
 
 .checkbox-group {
@@ -242,6 +354,25 @@ body {
   transform: translateY(0);
 }
 
+.cancel-btn {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.cancel-btn:hover {
+  background: rgba(148, 163, 184, 0.2);
+  color: var(--text-primary);
+}
+
 .btn-icon {
   font-size: 1.25rem;
 }
@@ -249,10 +380,6 @@ body {
 /* ========================================
    Calendar Section
    ======================================== */
-.calendar-section {
-  animation: fadeInUp 0.6s ease 0.4s both;
-}
-
 .calendar-header {
   display: flex;
   align-items: center;
@@ -337,28 +464,24 @@ body {
   border: 2px solid transparent;
 }
 
-.calendar-day:not(.empty-day):hover {
-  transform: scale(1.1);
+.calendar-day:not(.other-month):hover {
+  transform: scale(1.12);
   z-index: 10;
-}
-
-.calendar-day.empty-day {
-  background: rgba(148, 163, 184, 0.05);
-  color: var(--empty);
-  cursor: default;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.4);
 }
 
 .calendar-day.other-month {
   color: var(--empty);
-  opacity: 0.4;
+  opacity: 0.35;
+  background: rgba(148, 163, 184, 0.04);
 }
 
 .calendar-day.today {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
 }
 
-/* Color Classes for Progress Status */
+/* Color Classes */
 .calendar-day.success {
   background: linear-gradient(135deg, var(--success), var(--success-light));
   color: white;
@@ -395,6 +518,7 @@ body {
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-lg);
+  margin-bottom: var(--spacing-lg);
 }
 
 .legend-title {
@@ -405,45 +529,111 @@ body {
 }
 
 .legend-items {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-md);
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
 }
 
 .legend-color {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 6px;
   flex-shrink: 0;
   box-shadow: var(--shadow-md);
 }
 
-.legend-color.success {
-  background: linear-gradient(135deg, var(--success), var(--success-light));
-}
-
-.legend-color.partial {
-  background: linear-gradient(135deg, var(--partial), var(--partial-light));
-}
-
-.legend-color.fail {
-  background: linear-gradient(135deg, var(--fail), var(--fail-light));
-}
-
-.legend-color.empty {
-  background: rgba(148, 163, 184, 0.1);
-  border: 2px solid var(--empty);
-}
+.legend-color.success { background: linear-gradient(135deg, var(--success), var(--success-light)); }
+.legend-color.partial { background: linear-gradient(135deg, var(--partial), var(--partial-light)); }
+.legend-color.fail    { background: linear-gradient(135deg, var(--fail), var(--fail-light)); }
+.legend-color.empty   { background: rgba(148, 163, 184, 0.1); border: 2px solid var(--empty); }
 
 .legend-text {
   font-size: 0.875rem;
   color: var(--text-secondary);
+}
+
+/* ========================================
+   Edit Day Modal
+   ======================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: var(--spacing-md);
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-card {
+  background: #1e293b;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xs);
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modal-close {
+  background: rgba(148, 163, 184, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.modal-close:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--fail-light);
+}
+
+.modal-date {
+  font-size: 0.9rem;
+  color: var(--primary);
+  font-weight: 500;
+  margin-bottom: var(--spacing-md);
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ========================================
@@ -480,7 +670,7 @@ body {
   opacity: 0;
   transform: translateY(100px);
   transition: all var(--transition-base);
-  z-index: 1000;
+  z-index: 3000;
   max-width: 300px;
   font-weight: 500;
 }
@@ -490,101 +680,47 @@ body {
   transform: translateY(0);
 }
 
-.toast.success {
-  border-left: 4px solid var(--success);
-}
-
-.toast.error {
-  border-left: 4px solid var(--fail);
-}
+.toast.success { border-left: 4px solid var(--success); }
+.toast.error   { border-left: 4px solid var(--fail); }
 
 /* ========================================
    Animations
    ======================================== */
 @keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-30px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* ========================================
    Responsive Design
    ======================================== */
 @media (max-width: 768px) {
-  .container {
-    padding: var(--spacing-md);
-  }
-  
-  .app-title {
-    font-size: 2rem;
-  }
-  
-  .app-logo {
-    height: 60px;
-  }
-  
-  .legend-items {
-    grid-template-columns: 1fr;
-  }
-  
-  .calendar-title {
-    font-size: 1.25rem;
-  }
-  
-  .calendar-day {
-    font-size: 0.75rem;
-  }
-  
-  .toast {
-    right: 1rem;
-    bottom: 1rem;
-    left: 1rem;
-    max-width: none;
-  }
+  .container { padding: var(--spacing-md); }
+  .app-title { font-size: 2rem; }
+  .app-logo  { height: 60px; }
+  .calendar-title { font-size: 1.25rem; }
+  .calendar-day { font-size: 0.75rem; }
+  .toast { right: 1rem; bottom: 1rem; left: 1rem; max-width: none; }
+  .tab-label { font-size: 0.7rem; }
+  .tab-icon { font-size: 1.25rem; }
+  .legend-items { gap: var(--spacing-sm); }
 }
 
 @media (max-width: 480px) {
-  .app-title {
-    font-size: 1.75rem;
-  }
-  
-  .calendar-header {
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
-  }
-  
-  .calendar-title {
-    width: 100%;
-    order: -1;
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  .weekday {
-    font-size: 0.75rem;
-  }
+  .app-title { font-size: 1.75rem; }
+  .calendar-header { flex-wrap: wrap; gap: var(--spacing-sm); }
+  .calendar-title { width: 100%; order: -1; margin-bottom: var(--spacing-sm); }
+  .weekday { font-size: 0.7rem; }
+  .tab-btn { padding: 0.6rem 0.25rem; }
+  .date-picker-group { flex-direction: column; align-items: flex-start; }
 }
