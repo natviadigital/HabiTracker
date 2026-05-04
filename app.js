@@ -126,9 +126,7 @@ async function loadDataForDate(dateStr) {
     }
 }
 
-async function loadMonthData(year, month) {
-    const startDate = formatDate(new Date(year, month, 1));
-    const endDate = formatDate(new Date(year, month + 1, 0));
+async function loadDataRange(startDate, endDate) {
     try {
         const { data, error } = await supabase
             .from('habit_logs').select('*').gte('date', startDate).lte('date', endDate);
@@ -192,18 +190,25 @@ async function renderCalendar(mode) {
 
     document.getElementById(`calendarTitle${capitalize(mode)}`).textContent = `${MONTHS[month]} ${year}`;
 
-    const monthData = await loadMonthData(year, month);
-    const gridEl = document.getElementById(`calendarGrid${capitalize(mode)}`);
-    gridEl.innerHTML = '';
-
     const firstDayOfWeek = new Date(year, month, 1).getDay();
     const numDays = new Date(year, month + 1, 0).getDate();
     const prevMonthLastDay = new Date(year, month, 0).getDate();
     const todayStr = formatDate(new Date());
 
-    // Previous month trailing days (non-interactive)
+    const remaining = 42 - (firstDayOfWeek + numDays);
+    const startDateStr = formatDate(new Date(year, month, 1 - firstDayOfWeek));
+    const endDateStr = formatDate(new Date(year, month + 1, remaining));
+
+    const monthData = await loadDataRange(startDateStr, endDateStr);
+    const gridEl = document.getElementById(`calendarGrid${capitalize(mode)}`);
+    gridEl.innerHTML = '';
+
+    // Previous month trailing days
     for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-        gridEl.appendChild(createDayElement(prevMonthLastDay - i, 'other-month', null));
+        const dateStr = formatDate(new Date(year, month - 1, prevMonthLastDay - i));
+        const dayData = monthData[dateStr];
+        let classes = getColorClass(mode, dayData) + ' other-month';
+        gridEl.appendChild(createDayElement(prevMonthLastDay - i, classes, dateStr));
     }
 
     // Current month days
@@ -215,10 +220,12 @@ async function renderCalendar(mode) {
         gridEl.appendChild(createDayElement(day, classes, dateStr));
     }
 
-    // Next month leading days (non-interactive)
-    const remaining = 42 - gridEl.children.length;
+    // Next month leading days
     for (let day = 1; day <= remaining; day++) {
-        gridEl.appendChild(createDayElement(day, 'other-month', null));
+        const dateStr = formatDate(new Date(year, month + 1, day));
+        const dayData = monthData[dateStr];
+        let classes = getColorClass(mode, dayData) + ' other-month';
+        gridEl.appendChild(createDayElement(day, classes, dateStr));
     }
 }
 
