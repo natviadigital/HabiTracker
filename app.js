@@ -12,7 +12,8 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const calendarDates = {
     diet: new Date(),
     exercise: new Date(),
-    summary: new Date()
+    summary: new Date(),
+    desmo: new Date()
 };
 
 const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -33,11 +34,13 @@ async function init() {
     updateRegisterDateLabel(today);
     await loadDataForDate(today);
 
-    // Render all three calendars
+    // Render all calendars
     await Promise.all([
         renderCalendar('diet'),
         renderCalendar('exercise'),
-        renderCalendar('summary')
+        renderCalendar('summary'),
+        renderCalendar('desmo'),
+        refreshDesmoQuick()
     ]);
 
     // Tab navigation
@@ -59,6 +62,8 @@ async function init() {
     document.getElementById('nextMonthExercise').addEventListener('click', () => navigateMonth('exercise', 1));
     document.getElementById('prevMonthSummary').addEventListener('click', () => navigateMonth('summary', -1));
     document.getElementById('nextMonthSummary').addEventListener('click', () => navigateMonth('summary', 1));
+    document.getElementById('prevMonthDesmo').addEventListener('click', () => navigateMonth('desmo', -1));
+    document.getElementById('nextMonthDesmo').addEventListener('click', () => navigateMonth('desmo', 1));
 
     // Modal events
     document.getElementById('closeModal').addEventListener('click', closeEditModal);
@@ -66,6 +71,23 @@ async function init() {
     document.getElementById('modalSaveBtn').addEventListener('click', saveModalProgress);
     document.getElementById('editModal').addEventListener('click', (e) => {
         if (e.target.id === 'editModal') closeEditModal();
+    });
+
+    // Desmopresina events
+    document.querySelectorAll('.desmo-quick .pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => quickLogDesmo(Number(btn.dataset.pills)));
+    });
+    document.querySelectorAll('#desmoModal .pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            desmoModalPills = Number(btn.dataset.pills);
+            setPillSelection(document.getElementById('desmoModal'), desmoModalPills);
+        });
+    });
+    document.getElementById('closeDesmoModal').addEventListener('click', closeDesmoModal);
+    document.getElementById('desmoModalSaveBtn').addEventListener('click', () => saveDesmoModal(false));
+    document.getElementById('desmoModalClearBtn').addEventListener('click', () => saveDesmoModal(true));
+    document.getElementById('desmoModal').addEventListener('click', (e) => {
+        if (e.target.id === 'desmoModal') closeDesmoModal();
     });
 }
 
@@ -126,10 +148,10 @@ async function loadDataForDate(dateStr) {
     }
 }
 
-async function loadDataRange(startDate, endDate) {
+async function loadDataRange(startDate, endDate, table = 'habit_logs') {
     try {
         const { data, error } = await supabase
-            .from('habit_logs').select('*').gte('date', startDate).lte('date', endDate);
+            .from(table).select('*').gte('date', startDate).lte('date', endDate);
         if (error) { console.error(error); return {}; }
         const map = {};
         (data || []).forEach(item => { map[item.date] = item; });
@@ -199,7 +221,7 @@ async function renderCalendar(mode) {
     const startDateStr = formatDate(new Date(year, month, 1 - firstDayOfWeek));
     const endDateStr = formatDate(new Date(year, month + 1, remaining));
 
-    const monthData = await loadDataRange(startDateStr, endDateStr);
+    const monthData = await loadDataRange(startDateStr, endDateStr, mode === 'desmo' ? 'desmo_logs' : 'habit_logs');
     const gridEl = document.getElementById(`calendarGrid${capitalize(mode)}`);
     gridEl.innerHTML = '';
 
@@ -208,7 +230,7 @@ async function renderCalendar(mode) {
         const dateStr = formatDate(new Date(year, month - 1, prevMonthLastDay - i));
         const dayData = monthData[dateStr];
         let classes = getColorClass(mode, dayData) + ' other-month';
-        gridEl.appendChild(createDayElement(prevMonthLastDay - i, classes, dateStr));
+        gridEl.appendChild(createDayElement(prevMonthLastDay - i, classes, dateStr, mode));
     }
 
     // Current month days
@@ -217,7 +239,7 @@ async function renderCalendar(mode) {
         const dayData = monthData[dateStr];
         let classes = getColorClass(mode, dayData);
         if (dateStr === todayStr) classes += ' today';
-        gridEl.appendChild(createDayElement(day, classes, dateStr));
+        gridEl.appendChild(createDayElement(day, classes, dateStr, mode));
     }
 
     // Next month leading days
@@ -225,18 +247,36 @@ async function renderCalendar(mode) {
         const dateStr = formatDate(new Date(year, month + 1, day));
         const dayData = monthData[dateStr];
         let classes = getColorClass(mode, dayData) + ' other-month';
-        gridEl.appendChild(createDayElement(day, classes, dateStr));
+        gridEl.appendChild(createDayElement(day, classes, dateStr, mode));
     }
+
+    if (mode === 'desmo') renderDesmoStats(monthData, year, month);
 }
 
-function createDayElement(day, className, dateStr) {
+function renderDesmoStats(monthData, year, month) {
+    const prefix = `${year}-${String(month + 1).padStart(2, '0')}-`;
+    let two = 0, three = 0;
+    Object.values(monthData).forEach(item => {
+        if (!item.date.startsWith(prefix)) return;
+        if (item.pills >= 3) three++;
+        else if (item.pills === 2) two++;
+    });
+    const total = two + three;
+    const pct = total ? Math.round((three / total) * 100) : 0;
+    document.getElementById('desmoStats').innerHTML = total
+        ? `🟢 <strong>${two}</strong> días con 2 · 🟠 <strong>${three}</strong> días con 3 (${pct}% de los días registrados)`
+        : 'Sin registros este mes';
+}
+
+function createDayElement(day, className, dateStr, mode) {
     const el = document.createElement('div');
     el.className = `calendar-day ${className}`;
     el.textContent = day;
     if (dateStr) {
         el.dataset.date = dateStr;
         el.title = 'Clic para editar';
-        el.addEventListener('click', () => openEditModal(dateStr));
+        el.addEventListener('click', () =>
+            mode === 'desmo' ? openDesmoModal(dateStr) : openEditModal(dateStr));
     } else {
         el.style.cursor = 'default';
         el.style.pointerEvents = 'none';
@@ -255,6 +295,11 @@ function getColorClass(mode, dayData) {
     }
     if (mode === 'exercise') {
         return dayData.exercise_completed ? 'success' : 'fail';
+    }
+    if (mode === 'desmo') {
+        if (dayData.pills >= 3) return 'high';
+        if (dayData.pills === 2) return 'success';
+        return 'no-data';
     }
     // summary
     const { diet_completed, exercise_completed } = dayData;
@@ -312,6 +357,82 @@ async function saveModalProgress() {
         // Sync register form if same date is selected
         const regDate = document.getElementById('selectedDate').value;
         if (regDate === modalCurrentDate) await loadDataForDate(modalCurrentDate);
+    }
+}
+
+/* ========================================
+   Desmopresina
+   ======================================== */
+let desmoModalDate = null;
+let desmoModalPills = null;
+
+async function getDesmoForDate(dateStr) {
+    const { data, error } = await supabase
+        .from('desmo_logs').select('pills').eq('date', dateStr).maybeSingle();
+    if (error) { console.error(error); return null; }
+    return data?.pills ?? null;
+}
+
+async function saveDesmo(dateStr, pills) {
+    try {
+        const { error } = pills
+            ? await supabase.from('desmo_logs').upsert(
+                { date: dateStr, pills, updated_at: new Date().toISOString() },
+                { onConflict: 'date' })
+            : await supabase.from('desmo_logs').delete().eq('date', dateStr);
+        if (error) { console.error(error); showToast('Error al guardar desmopresina', 'error'); return false; }
+        showToast(pills ? `💊 ${pills} pastillas registradas` : 'Registro borrado', 'success');
+        return true;
+    } catch (err) {
+        console.error(err);
+        showToast('Error al guardar desmopresina', 'error');
+        return false;
+    }
+}
+
+function setPillSelection(container, pills) {
+    container.querySelectorAll('.pill-btn').forEach(btn => {
+        btn.classList.toggle('selected', Number(btn.dataset.pills) === pills);
+    });
+}
+
+async function refreshDesmoQuick() {
+    const pills = await getDesmoForDate(formatDate(new Date()));
+    setPillSelection(document.querySelector('.desmo-quick'), pills);
+}
+
+async function quickLogDesmo(pills) {
+    const today = formatDate(new Date());
+    const current = await getDesmoForDate(today);
+    // Tapping the already-selected option clears today's record
+    const newValue = current === pills ? null : pills;
+    if (await saveDesmo(today, newValue)) {
+        setPillSelection(document.querySelector('.desmo-quick'), newValue);
+        await renderCalendar('desmo');
+    }
+}
+
+async function openDesmoModal(dateStr) {
+    desmoModalDate = dateStr;
+    document.getElementById('desmoModalDateLabel').textContent = formatDateDisplay(dateStr);
+    desmoModalPills = await getDesmoForDate(dateStr);
+    setPillSelection(document.getElementById('desmoModal'), desmoModalPills);
+    document.getElementById('desmoModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDesmoModal() {
+    document.getElementById('desmoModal').classList.add('hidden');
+    document.body.style.overflow = '';
+    desmoModalDate = null;
+}
+
+async function saveDesmoModal(clear = false) {
+    if (!desmoModalDate) return;
+    if (!clear && !desmoModalPills) { showToast('Selecciona 2 o 3 pastillas', 'error'); return; }
+    if (await saveDesmo(desmoModalDate, clear ? null : desmoModalPills)) {
+        closeDesmoModal();
+        await Promise.all([renderCalendar('desmo'), refreshDesmoQuick()]);
     }
 }
 

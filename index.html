@@ -53,6 +53,10 @@
                 <span class="tab-icon">📊</span>
                 <span class="tab-label">Resumen</span>
             </button>
+            <button id="tab-desmo" class="tab-btn" data-view="desmo" aria-selected="false" role="tab">
+                <span class="tab-icon">💊</span>
+                <span class="tab-label">Desmo</span>
+            </button>
             <button id="tab-register" class="tab-btn" data-view="register" aria-selected="false" role="tab">
                 <span class="tab-icon">✏️</span>
                 <span class="tab-label">Registrar</span>
@@ -144,6 +148,46 @@
             </div>
         </section>
 
+        <!-- VIEW: Desmopresina Calendar -->
+        <section class="view hidden" id="view-desmo" role="tabpanel">
+            <div class="view-header">
+                <h2 class="view-title">💊 Desmopresina</h2>
+                <p class="view-subtitle">Haz clic en cualquier día para editar · Verde = 2 pastillas · Naranja = 3 pastillas</p>
+            </div>
+            <div class="tracker-card desmo-quick">
+                <p class="desmo-quick-title">¿Cuántas tomaste hoy?</p>
+                <div class="pill-options">
+                    <button class="pill-btn dose-2" data-pills="2" id="quickDesmo2">
+                        <span class="pill-icons">💊💊</span><span>2 pastillas</span>
+                    </button>
+                    <button class="pill-btn dose-3" data-pills="3" id="quickDesmo3">
+                        <span class="pill-icons">💊💊💊</span><span>3 pastillas</span>
+                    </button>
+                </div>
+            </div>
+            <div class="calendar-header">
+                <button id="prevMonthDesmo" class="nav-btn" aria-label="Mes anterior"><span>←</span></button>
+                <h2 class="calendar-title" id="calendarTitleDesmo"></h2>
+                <button id="nextMonthDesmo" class="nav-btn" aria-label="Mes siguiente"><span>→</span></button>
+            </div>
+            <div class="calendar-wrapper">
+                <div class="calendar-weekdays">
+                    <div class="weekday">Dom</div><div class="weekday">Lun</div><div class="weekday">Mar</div>
+                    <div class="weekday">Mié</div><div class="weekday">Jue</div><div class="weekday">Vie</div><div class="weekday">Sáb</div>
+                </div>
+                <div class="calendar-grid" id="calendarGridDesmo"></div>
+            </div>
+            <div class="legend">
+                <h3 class="legend-title">Resumen del mes</h3>
+                <p class="desmo-stats" id="desmoStats"></p>
+                <div class="legend-items">
+                    <div class="legend-item"><span class="legend-color success"></span><span class="legend-text">2 pastillas (dosis normal)</span></div>
+                    <div class="legend-item"><span class="legend-color high"></span><span class="legend-text">3 pastillas</span></div>
+                    <div class="legend-item"><span class="legend-color empty"></span><span class="legend-text">Sin registro</span></div>
+                </div>
+            </div>
+        </section>
+
         <!-- VIEW: Register -->
         <section class="view hidden" id="view-register" role="tabpanel">
             <div class="tracker-card">
@@ -200,6 +244,29 @@
             <div class="modal-actions">
                 <button id="modalSaveBtn" class="save-btn"><span class="btn-icon">✓</span>Guardar</button>
                 <button id="modalCancelBtn" class="cancel-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desmopresina Edit Modal -->
+    <div id="desmoModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">💊 Desmopresina</h3>
+                <button id="closeDesmoModal" class="modal-close" aria-label="Cerrar">✕</button>
+            </div>
+            <p class="modal-date" id="desmoModalDateLabel"></p>
+            <div class="pill-options modal-pill-options">
+                <button class="pill-btn dose-2" data-pills="2">
+                    <span class="pill-icons">💊💊</span><span>2 pastillas</span>
+                </button>
+                <button class="pill-btn dose-3" data-pills="3">
+                    <span class="pill-icons">💊💊💊</span><span>3 pastillas</span>
+                </button>
+            </div>
+            <div class="modal-actions">
+                <button id="desmoModalSaveBtn" class="save-btn"><span class="btn-icon">✓</span>Guardar</button>
+                <button id="desmoModalClearBtn" class="cancel-btn">Borrar registro</button>
             </div>
         </div>
     </div>

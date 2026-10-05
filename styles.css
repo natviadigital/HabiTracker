@@ -14,6 +14,8 @@
   --fail: #ef4444;
   --fail-light: #f87171;
   --empty: #9ca3af;
+  --high: #ea580c;
+  --high-light: #fb923c;
   
   /* Neutral Colors */
   --bg-primary: #0f172a;
@@ -556,6 +558,80 @@ body {
 .legend-text {
   font-size: 0.875rem;
   color: var(--text-secondary);
+}
+
+/* ========================================
+   Desmopresina
+   ======================================== */
+.calendar-day.high {
+  background: linear-gradient(135deg, var(--high), var(--high-light));
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.45);
+}
+
+.legend-color.high { background: linear-gradient(135deg, var(--high), var(--high-light)); }
+
+.desmo-quick {
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+}
+
+.desmo-quick-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  text-align: center;
+}
+
+.pill-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+}
+
+.modal-pill-options {
+  margin-bottom: var(--spacing-lg);
+}
+
+.pill-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: var(--spacing-md) var(--spacing-sm);
+  background: rgba(148, 163, 184, 0.05);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.pill-icons { font-size: 1.4rem; letter-spacing: -0.15em; }
+
+.pill-btn.dose-2:hover { border-color: var(--success); }
+.pill-btn.dose-3:hover { border-color: var(--high); }
+
+.pill-btn.dose-2.selected {
+  background: linear-gradient(135deg, var(--success), var(--success-light));
+  border-color: var(--success);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.pill-btn.dose-3.selected {
+  background: linear-gradient(135deg, var(--high), var(--high-light));
+  border-color: var(--high);
+  box-shadow: 0 4px 15px rgba(234, 88, 12, 0.45);
+}
+
+.desmo-stats {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
 }
 
 /* ========================================
